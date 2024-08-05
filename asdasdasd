@@ -1,1 +1,334 @@
-sup
+-- Load Orion Library
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+-- Create a Window
+local Window = OrionLib:MakeWindow({
+    Name = "SyzothHub - FF2",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "OrionTest",
+    IntroText = "Welcome to SyzothHub!",
+    IntroIcon = "rbxassetid://10511856020" -- Replace with your intro icon ID
+})
+
+-- Create Tabs
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://10511856020", -- Replace with your tab icon ID
+    PremiumOnly = false
+})
+
+local SettingsTab = Window:MakeTab({
+    Name = "Settings",
+    Icon = "rbxassetid://10511856020", -- Replace with your tab icon ID
+    PremiumOnly = false
+})
+
+local MagsTab = Window:MakeTab({
+    Name = "Magnet",
+    Icon = "rbxassetid://10511856020", -- Replace with your tab icon ID
+    PremiumOnly = false
+})
+
+local MagSetsTab = Window:MakeTab({
+    Name = "Magnet Settings",
+    Icon = "rbxassetid://10511856020", -- Replace with your tab icon ID
+    PremiumOnly = false
+})
+
+local JumpPowerTab = Window:MakeTab({
+    Name = "Jump Power",
+    Icon = "rbxassetid://10511856020", -- Replace with your tab icon ID
+    PremiumOnly = false
+})
+
+-- FPS Changer Section
+local function toggleFPSChanger()
+    local ScreenGui = Instance.new("ScreenGui")
+    local MainFrame = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local Title = Instance.new("TextLabel")
+    local FPSBox = Instance.new("TextBox")
+    local ApplyButton = Instance.new("TextButton")
+    local UICorner2 = Instance.new("UICorner")
+    local CloseButton = Instance.new("TextButton")
+    local UICorner3 = Instance.new("UICorner")
+
+    ScreenGui.Parent = game.CoreGui
+
+    MainFrame.Parent = ScreenGui
+    MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+    MainFrame.Size = UDim2.new(0, 300, 0, 200)
+    MainFrame.Active = true
+    MainFrame.Draggable = true
+
+    UICorner.Parent = MainFrame
+    UICorner.CornerRadius = UDim.new(0, 12)
+
+    Title.Parent = MainFrame
+    Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Title.Size = UDim2.new(1, 0, 0, 50)
+    Title.Font = Enum.Font.SourceSansBold
+    Title.Text = "FPS Changer"
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.TextSize = 24
+    Title.TextWrapped = true
+    Title.TextXAlignment = Enum.TextXAlignment.Center
+
+    FPSBox.Parent = MainFrame
+    FPSBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    FPSBox.Position = UDim2.new(0.5, -100, 0.5, -25)
+    FPSBox.Size = UDim2.new(0, 200, 0, 50)
+    FPSBox.Font = Enum.Font.SourceSans
+    FPSBox.PlaceholderText = "Enter FPS"
+    FPSBox.Text = ""
+    FPSBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    FPSBox.TextSize = 20
+    FPSBox.TextWrapped = true
+    FPSBox.TextXAlignment = Enum.TextXAlignment.Center
+
+    ApplyButton.Parent = MainFrame
+    ApplyButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    ApplyButton.Position = UDim2.new(0.5, -50, 0.75, -15)
+    ApplyButton.Size = UDim2.new(0, 100, 0, 30)
+    ApplyButton.Font = Enum.Font.SourceSansBold
+    ApplyButton.Text = "Apply"
+    ApplyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ApplyButton.TextSize = 20
+    ApplyButton.TextWrapped = true
+    ApplyButton.TextXAlignment = Enum.TextXAlignment.Center
+
+    UICorner2.Parent = ApplyButton
+    UICorner2.CornerRadius = UDim.new(0, 12)
+
+    CloseButton.Parent = MainFrame
+    CloseButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    CloseButton.Position = UDim2.new(1, -35, 0, 5)
+    CloseButton.Size = UDim2.new(0, 30, 0, 30)
+    CloseButton.Font = Enum.Font.SourceSansBold
+    CloseButton.Text = "X"
+    CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    CloseButton.TextSize = 20
+    CloseButton.TextWrapped = true
+    CloseButton.TextXAlignment = Enum.TextXAlignment.Center
+
+    UICorner3.Parent = CloseButton
+    UICorner3.CornerRadius = UDim.new(0, 12)
+
+    local function applyFPS()
+        local fps = tonumber(FPSBox.Text)
+        if fps and fps > 0 then
+            setfpscap(fps)
+            ApplyButton.Text = "Applied!"
+            wait(1)
+            ApplyButton.Text = "Apply"
+        else
+            FPSBox.Text = ""
+            FPSBox.PlaceholderText = "Invalid FPS"
+        end
+    end
+
+    ApplyButton.MouseButton1Click:Connect(applyFPS)
+
+    FPSBox:GetPropertyChangedSignal("Text"):Connect(function()
+        FPSBox.Text = FPSBox.Text:gsub("%D", "")
+    end)
+
+    CloseButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
+    end)
+
+    local dragging = false
+    local dragInput, mousePos, framePos
+
+    MainFrame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            mousePos = input.Position
+            framePos = MainFrame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    MainFrame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - mousePos
+            MainFrame.Position = UDim2.new(
+                framePos.X.Scale,
+                framePos.X.Offset + delta.X,
+                framePos.Y.Scale,
+                framePos.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
+-- Magnet
+local scriptEnabled = false
+local weakMagRange = 20
+local blatantMagRange = 35
+local connection = nil
+
+local player = game:GetService("Players").LocalPlayer
+local RunService = game:GetService("RunService")
+
+-- Functions 
+local function modifyHitbox(ball, range, increase)
+    if increase then
+        ball.Size = Vector3.new(range, range, range)
+        -- Ensure
+        ball.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0) -- Fric
+        ball.CanCollide = false -- Prevent 
+    else
+        ball.Size = Vector3.new(1, 1, 1)
+        -- Reset ball
+        ball.CustomPhysicalProperties = PhysicalProperties.new(0.5, 0.5, 1, 1, 1)
+        ball.CanCollide = true -- Allow the ball to collide normally
+    end
+end
+
+local function toggleMagnet(range)
+    scriptEnabled = not scriptEnabled
+
+    if scriptEnabled then
+        connection = RunService.Stepped:Connect(function()
+            for _, v in pairs(workspace:GetChildren()) do
+                if v.Name == "Football" and v:IsA("BasePart") then
+                    local mag = (player.Character.HumanoidRootPart.Position - v.Position).Magnitude
+                    if mag < range then
+                        modifyHitbox(v, range, true)
+                    else
+                        modifyHitbox(v, range, false)
+                    end
+                end
+            end
+        end)
+    else
+        if connection then
+            connection:Disconnect()
+        end
+        for _, v in pairs(workspace:GetChildren()) do
+            if v.Name == "Football" and v:IsA("BasePart") then
+                modifyHitbox(v, 1, false)
+            end
+        end
+    end
+end
+
+-- Jump Power Section
+local jumpPower = 50
+
+local function updateJumpPower(value)
+    jumpPower = value
+    if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+        player.Character:FindFirstChildOfClass("Humanoid").JumpPower = jumpPower
+    end
+end
+
+-- Main Tab Toggles
+MagsTab:AddToggle({
+    Name = "Legit Magnet",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            toggleMagnet(weakMagRange)
+        else
+            scriptEnabled = false
+            if connection then
+                connection:Disconnect()
+            end
+        end
+    end
+})
+
+MagsTab:AddToggle({
+    Name = "Blatant Magnet",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            toggleMagnet(blatantMagRange)
+        else
+            scriptEnabled = false
+            if connection then
+                connection:Disconnect()
+            end
+        end
+    end
+})
+
+-- Settings Tab Sliders
+MagSetsTab:AddSlider({
+    Name = "Legit Magnet Range",
+    Min = 0,
+    Max = 50,
+    Default = 20,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 1,
+    ValueName = "Range",
+    Callback = function(Value)
+        weakMagRange = Value
+    end
+})
+
+MagSetsTab:AddSlider({
+    Name = "Blatant Magnet Range",
+    Min = 20,
+    Max = 100,
+    Default = 35,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 1,
+    ValueName = "Range",
+    Callback = function(Value)
+        blatantMagRange = Value
+    end
+})
+
+JumpPowerTab:AddSlider({
+    Name = "Jump Power",
+    Min = 10,
+    Max = 75,
+    Default = 50,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 5,
+    ValueName = "Power",
+    Callback = updateJumpPower
+})
+
+-- Settings Tab Buttons
+SettingsTab:AddButton({
+    Name = "Reset Settings",
+    Callback = function()
+        weakMagRange = 20
+        blatantMagRange = 35
+        jumpPower = 50
+        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").JumpPower = jumpPower
+        end
+        OrionLib:MakeNotification({
+            Name = "Settings Reset",
+            Content = "All settings have been reset to default values.",
+            Image = "rbxassetid://YOUR_NOTIFICATION_ICON_ID", -- Replace with your notification icon ID
+            Time = 5
+        })
+    end
+})
+
+SettingsTab:AddButton({
+    Name = "Toggle FPS Changer",
+    Callback = toggleFPSChanger
+})
+
+-- Initialize Orion Library
+OrionLib:Init()
